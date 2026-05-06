@@ -7,7 +7,7 @@ class ResPartner(models.Model):
 
     def action_send_whatsapp(self):
         self.ensure_one()
-        number = self.mobile or self.phone
+        number = self.phone
         if not number:
             raise UserError(_("%s has no phone or mobile number.") % self.display_name)
         return {
