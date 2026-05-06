@@ -1,0 +1,20 @@
+{
+    "name": "mr-whatsapp-connector-sidecar",
+    "version": "1.0.0",
+    "description": "Node.js sidecar service that bridges Odoo (mr_whatsapp_connector) to whatsapp-web.js",
+    "main": "server.js",
+    "private": true,
+    "scripts": {
+        "start": "node server.js"
+    },
+    "engines": {
+        "node": ">=18"
+    },
+    "dependencies": {
+        "axios": "^1.7.0",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "qrcode": "^1.5.4",
+        "whatsapp-web.js": "^1.26.0"
+    }
+}

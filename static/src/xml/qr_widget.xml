@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="mr_whatsapp_connector.QrWidget">
+        <div class="o_mr_whatsapp_qr">
+            <div class="o_mr_whatsapp_qr_header">
+                <span class="badge" t-att-class="statusBadgeClass">
+                    <t t-esc="statusLabel"/>
+                </span>
+                <span t-if="state.phone" class="ms-2 text-muted">
+                    Paired: <strong t-esc="state.phone"/>
+                </span>
+            </div>
+
+            <div t-if="state.qr" class="o_mr_whatsapp_qr_image mt-2">
+                <img t-att-src="state.qr" alt="WhatsApp QR" style="width:256px;height:256px;"/>
+                <p class="text-muted mt-1">
+                    Open WhatsApp → Linked Devices → Link a Device, then scan this code.
+                </p>
+            </div>
+
+            <div t-elif="state.status == 'ready' or state.status == 'authenticated'"
+                 class="o_mr_whatsapp_qr_ok mt-2 text-success">
+                <i class="fa fa-check-circle me-1"/> Session is active. No action needed.
+            </div>
+
+            <div t-elif="state.status == 'initializing'" class="text-muted mt-2">
+                Sidecar is starting up… this can take 10-20 seconds on first run.
+            </div>
+
+            <div t-elif="state.error" class="text-danger mt-2">
+                <i class="fa fa-exclamation-triangle me-1"/>
+                <t t-esc="state.error"/>
+            </div>
+
+            <div t-else="" class="text-muted mt-2">
+                Waiting for sidecar status…
+            </div>
+        </div>
+    </t>
+
+</templates>

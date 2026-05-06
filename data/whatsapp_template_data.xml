@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="tpl_partner_greeting" model="mr.whatsapp.template">
+        <field name="name">Generic partner greeting</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="phone_field">mobile</field>
+        <field name="body">Hi {{ object.name }}, hope you are doing well.</field>
+    </record>
+
+    <record id="tpl_sale_order_confirmation" model="mr.whatsapp.template">
+        <field name="name">Sales order confirmation</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="body">Hi {{ object.partner_id.name }}, your order {{ object.name }} for a total of {{ object.amount_total }} {{ object.currency_id.name }} has been confirmed. Thank you!</field>
+    </record>
+
+    <record id="tpl_invoice_reminder" model="mr.whatsapp.template">
+        <field name="name">Invoice reminder</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="body">Hi {{ object.partner_id.name }}, this is a friendly reminder that invoice {{ object.name }} of {{ object.amount_total }} {{ object.currency_id.name }} is due on {{ object.invoice_date_due }}.</field>
+    </record>
+</odoo>
