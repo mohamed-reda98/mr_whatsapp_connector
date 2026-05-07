@@ -63,22 +63,37 @@
                                           enctype="multipart/form-data" novalidate="novalidate">
 
                                         <div class="mb-3">
-                                            <label for="wa_number" class="form-label fw-semibold">
+                                            <label class="form-label fw-semibold">
                                                 Recipient phone number
                                                 <span class="text-danger">*</span>
                                             </label>
-                                            <input
-                                                type="tel"
-                                                id="wa_number"
-                                                name="number"
-                                                class="form-control"
-                                                placeholder="+20 123 456 7890"
-                                                t-att-value="number or ''"
-                                                required="required"
-                                                autocomplete="tel"
-                                            />
+                                            <div class="input-group">
+                                                <span class="input-group-text">+</span>
+                                                <input
+                                                    type="text"
+                                                    id="wa_country_code"
+                                                    name="country_code"
+                                                    class="form-control"
+                                                    placeholder="20"
+                                                    style="max-width: 90px;"
+                                                    t-att-value="country_code or ''"
+                                                    inputmode="numeric"
+                                                    pattern="[0-9]*"
+                                                    aria-label="Country code"
+                                                />
+                                                <input
+                                                    type="tel"
+                                                    id="wa_number"
+                                                    name="number"
+                                                    class="form-control"
+                                                    placeholder="1011755025"
+                                                    t-att-value="number or ''"
+                                                    required="required"
+                                                    autocomplete="tel"
+                                                />
+                                            </div>
                                             <div class="form-text">
-                                                Include the country code, e.g. +1 for USA or +20 for Egypt.
+                                                Enter the country code (e.g. 20 for Egypt, 966 for Saudi, 1 for USA) and the local number. You can also paste the full number with <code>+</code> in the right field — the country code box is then optional.
                                             </div>
                                         </div>
 

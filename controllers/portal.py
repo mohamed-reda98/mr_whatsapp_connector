@@ -31,6 +31,7 @@ class WhatsAppPortalController(http.Controller):
     )
     def portal_send(self, **kwargs):
         number = (kwargs.get("number") or "").strip()
+        country_code = (kwargs.get("country_code") or "").strip().lstrip("+")
         message = (kwargs.get("message") or "").strip()
         uploaded = request.httprequest.files.getlist("attachments")
         files = [f for f in uploaded if f and f.filename]
@@ -39,6 +40,7 @@ class WhatsAppPortalController(http.Controller):
             return request.render("mr_whatsapp_connector.portal_send_form", {
                 "error": "Phone number is required.",
                 "number": number,
+                "country_code": country_code,
                 "message": message,
             })
 
@@ -46,11 +48,11 @@ class WhatsAppPortalController(http.Controller):
         Message = request.env["mr.whatsapp.message"].sudo()
 
         try:
-            normalized = Service._normalize_number(number)
+            normalized = Service._normalize_number(number, country_code=country_code or None)
 
             last_id = None
             if not files:
-                payload = Service.send_message(normalized, message)
+                payload = Service.send_message(normalized, message, country_code=country_code or None)
                 last_id = payload.get("message_id")
             else:
                 first = files[0]
@@ -59,7 +61,7 @@ class WhatsAppPortalController(http.Controller):
                     "filename": first.filename,
                     "mimetype": first.mimetype or "application/octet-stream",
                     "base64": first_data,
-                })
+                }, country_code=country_code or None)
                 last_id = payload.get("message_id")
                 for f in files[1:]:
                     fdata = base64.b64encode(f.read()).decode()
@@ -67,7 +69,7 @@ class WhatsAppPortalController(http.Controller):
                         "filename": f.filename,
                         "mimetype": f.mimetype or "application/octet-stream",
                         "base64": fdata,
-                    })
+                    }, country_code=country_code or None)
                     last_id = p.get("message_id") or last_id
 
             Message.create({
@@ -90,5 +92,6 @@ class WhatsAppPortalController(http.Controller):
             return request.render("mr_whatsapp_connector.portal_send_form", {
                 "error": str(exc),
                 "number": number,
+                "country_code": country_code,
                 "message": message,
             })

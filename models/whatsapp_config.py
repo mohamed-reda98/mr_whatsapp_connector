@@ -64,9 +64,13 @@ class WhatsAppService(models.AbstractModel):
             cleaned = cleaned[1:]
         elif cleaned.startswith("00"):
             cleaned = cleaned[2:]
-        elif cc and not cleaned.startswith(cc):
-            # Heuristic: assume the local portion lacks the country prefix.
+        elif cleaned.startswith("0") and cc:
+            # Local format with leading 0 (e.g. 01011755025) — replace 0 with cc.
             cleaned = cc + cleaned.lstrip("0")
+        elif cc and not cleaned.startswith(cc) and len(cleaned) < 11:
+            # Short bare number (likely local without 0) — prepend cc.
+            cleaned = cc + cleaned
+        # Otherwise: number is long enough, assume it already has a country code.
         if not cleaned.isdigit() or len(cleaned) < 6:
             raise UserError(_("Phone number %r does not look valid.") % number)
         return cleaned
