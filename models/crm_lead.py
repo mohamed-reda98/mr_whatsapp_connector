@@ -7,7 +7,7 @@ class CrmLead(models.Model):
 
     def action_send_whatsapp(self):
         self.ensure_one()
-        number = self.mobile or self.phone or (self.partner_id and (self.partner_id.mobile or self.partner_id.phone))
+        number =  self.phone or (self.partner_id and (self.partner_id.phone))
         if not number:
             raise UserError(_("This lead has no phone or mobile number."))
         return {

@@ -8,7 +8,7 @@ class SaleOrder(models.Model):
     def action_send_whatsapp(self):
         self.ensure_one()
         partner = self.partner_id
-        number = partner.mobile or partner.phone
+        number = partner.phone
         if not number:
             raise UserError(_("%s has no phone or mobile number.") % partner.display_name)
         return {

@@ -75,9 +75,6 @@ class WhatsAppWebhookController(http.Controller):
         partner = env["res.partner"].search(
             [("phone", "=like", "%" + number[-9:])],
             limit=1,
-        ) or env["res.partner"].search(
-            [("mobile", "=like", "%" + number[-9:])],
-            limit=1,
         )
 
         env["mr.whatsapp.message"].create({
