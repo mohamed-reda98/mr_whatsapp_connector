@@ -23,6 +23,7 @@ Service. Numbers can be banned. Use at your own risk.
         "purchase",
         "crm",
         "stock",
+        "portal",
     ],
     "data": [
         "security/ir.model.access.csv",
@@ -35,6 +36,7 @@ Service. Numbers can be banned. Use at your own risk.
         "views/purchase_order_views.xml",
         "views/crm_lead_views.xml",
         "views/menu_views.xml",
+        "views/portal_templates.xml",
     ],
     "assets": {
         "web.assets_backend": [
