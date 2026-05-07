@@ -1,0 +1,16 @@
+[Unit]
+Description=Mr WhatsApp Connector Sidecar
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/odoo/custom/addons/mr_whatsapp_connector/sidecar
+ExecStart=/usr/bin/env node server.js
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/odoo/custom/addons/mr_whatsapp_connector/sidecar/sidecar.log
+StandardError=append:/odoo/custom/addons/mr_whatsapp_connector/sidecar/sidecar.log
+
+[Install]
+WantedBy=multi-user.target
