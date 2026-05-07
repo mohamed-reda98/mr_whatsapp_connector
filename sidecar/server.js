@@ -100,6 +100,7 @@ client.on('disconnected', (reason) => {
     session.lastError = reason;
     notifyOdoo('disconnected', { reason });
     console.warn('[wa] disconnected:', reason);
+    scheduleRestart();
 });
 
 client.on('message', async (msg) => {
@@ -129,6 +130,29 @@ client.on('message_ack', async (msg, ack) => {
         status,
     });
 });
+
+let isRestarting = false;
+function scheduleRestart(delayMs = 5000) {
+    if (isRestarting) return;
+    isRestarting = true;
+    session.state = 'initializing';
+    session.qrDataUrl = null;
+    session.phone = null;
+    console.log(`[wa] scheduling restart in ${delayMs}ms...`);
+    setTimeout(async () => {
+        console.log('[wa] restarting client...');
+        try { await client.destroy(); } catch (_) {}
+        try {
+            await client.initialize();
+        } catch (err) {
+            console.error('[wa] restart failed:', err);
+            session.state = 'error';
+            session.lastError = String(err);
+        } finally {
+            isRestarting = false;
+        }
+    }, delayMs);
+}
 
 console.log('[wa] initializing client...');
 client.initialize().catch((err) => {
@@ -205,7 +229,12 @@ app.post('/send', async (req, res) => {
         const { to, message, attachment } = req.body || {};
         if (!to) return res.status(400).json({ ok: false, error: 'Missing "to".' });
 
-        const jid = toJid(to);
+        const numberId = await client.getNumberId(toJid(to));
+        if (!numberId) {
+            return res.status(400).json({ ok: false, error: `Number ${to} is not on WhatsApp.` });
+        }
+        const jid = numberId._serialized;
+
         let sent;
         if (attachment && attachment.base64) {
             const media = new MessageMedia(
@@ -224,6 +253,10 @@ app.post('/send', async (req, res) => {
         });
     } catch (err) {
         console.error('[send] error:', err);
+        if (err.message && err.message.includes('detached Frame')) {
+            session.state = 'disconnected';
+            scheduleRestart();
+        }
         res.status(500).json({ ok: false, error: String(err.message || err) });
     }
 });
